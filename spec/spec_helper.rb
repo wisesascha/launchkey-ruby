@@ -13,7 +13,15 @@ require 'ffaker'
 require 'factory_girl'
 require 'yaml'
 
-LAUNCHKEY_CONFIG = YAML.load File.read(File.expand_path('../config.yml', __FILE__))
+CONFIG_FILE = if File.exist?(File.expand_path('../config.yml', __FILE__))
+  File.expand_path('../config.yml', __FILE__)
+else
+  warn 'A developer-specific configuration was not found in spec/config.yml. '+
+       'Please copy spec/config.sample.yml to spec/config.yml and edit your details.'
+  File.expand_path('../config.sample.yml', __FILE__)
+end
+
+LAUNCHKEY_CONFIG = YAML.load(File.read(CONFIG_FILE))
 
 require 'launchkey'
 
