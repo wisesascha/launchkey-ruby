@@ -1,0 +1,8 @@
+en:
+  launchkey:
+    errors:
+      messages:
+        misconfiguration:
+          message: "LaunchKey has not been fully configured."
+          summary: "A domain, application ID, secret, and private key are required."
+          resolution: "Check the documentation for a more detailed explanation of required configuration options: domain, app_id, app_secret, private_key, passphrase."

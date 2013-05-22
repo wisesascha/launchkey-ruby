@@ -23,10 +23,11 @@ Or install it yourself as:
 require 'launchkey'
 
 LaunchKey.configure do |config|
+  config.domain      = 'http://youdomain.tld'
   config.app_id      = 1234567890
   config.app_secret  = 'abcdefghijklmnopqrstuvwyz'
-  config.private_key = File.open('path/to/key')
-  config.domain      = 'http://youdomain.tld'
+  config.private_key = File.read('path/to/key')
+  config.passphrase  = 'private key passphrase'
 end
 ```
 
