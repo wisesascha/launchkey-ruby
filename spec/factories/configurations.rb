@@ -1,7 +1,17 @@
 require 'securerandom'
 
 FactoryGirl.define do
-  sequence(:token) { SecureRandom.base64(32).gsub(/[^\d\w]/, '') }
+  sequence(:token)   { SecureRandom.base64(32).gsub(/[^\d\w]/, '') }
+
+  sequence(:keypair) do
+    pair = OpenSSL::PKey::RSA.new(1024)
+    [pair.to_pem, pair.public_key.to_pem].join
+  end
+
+  sequence(:public_key) do
+    pair = OpenSSL::PKey::RSA.new(1024)
+    pair.public_key.to_pem
+  end
 
   factory :configuration, aliases: [:config], class: LaunchKey::Configuration do
     skip_create
@@ -9,7 +19,7 @@ FactoryGirl.define do
     domain      { Faker::Internet.http_url }
     app_id      { rand(1..9_999_999) }
     app_secret  { FactoryGirl.generate(:token) }
-    private_key { SecureRandom.base64(512) }
+    keypair     { FactoryGirl.generate(:keypair) }
     passphrase  { FactoryGirl.generate(:token) }
 
     initialize_with do
