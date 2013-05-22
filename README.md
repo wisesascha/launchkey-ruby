@@ -1,6 +1,7 @@
-# Launchkey
+# LaunchKey
 
-TODO: Write a gem description
+The passwordless user authentication gem for interacting with
+[LaunchKey](https://launchkey.com/)'s REST API.
 
 ## Installation
 
@@ -16,9 +17,53 @@ Or install it yourself as:
 
     $ gem install launchkey
 
+## Configuration
+
+```ruby
+require 'launchkey'
+
+LaunchKey.configure do |config|
+  config.app_id      = 1234567890
+  config.app_secret  = 'abcdefghijklmnopqrstuvwyz'
+  config.private_key = File.open('path/to/key')
+  config.domain      = 'http://youdomain.tld'
+end
+```
+
 ## Usage
 
-TODO: Write usage instructions here
+### Signing In
+
+Make an authorization request with the user's LaunchKey username:
+
+```ruby
+request = LaunchKey.authorize(username)
+# => #<LaunchKey::AuthorizationRequest token:"...">
+```
+
+The returned request object is responsible for continuing the authorization
+process. After the authorization request is made, the user is responsible for
+either accepting or rejecting the authorization. To continue the process, you
+must poll until a response is given.
+
+```ruby
+until request.finished?
+  request.poll
+end
+
+if request.success?
+  # The request was accepted by the user.
+  authorization = request.authorization
+else
+  # The request was rejected by the user.
+end
+```
+
+### Signing Out
+
+```ruby
+authorization.destroy
+```
 
 ## Contributing
 
