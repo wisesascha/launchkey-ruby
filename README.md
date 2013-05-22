@@ -26,7 +26,7 @@ LaunchKey.configure do |config|
   config.domain      = 'http://youdomain.tld'
   config.app_id      = 1234567890
   config.app_secret  = 'abcdefghijklmnopqrstuvwyz'
-  config.private_key = File.read('path/to/key')
+  config.keypair     = File.read('path/to/rsa-keypair.pem')
   config.passphrase  = 'private key passphrase'
 end
 ```
@@ -38,8 +38,8 @@ end
 Make an authorization request with the user's LaunchKey username:
 
 ```ruby
-request = LaunchKey.authorize(username)
-# => #<LaunchKey::AuthorizationRequest token:"...">
+request = LaunchKey.authorize('johnwayne')
+# => #<LaunchKey::AuthRequest username:"johnwayne", token:"...">
 ```
 
 The returned request object is responsible for continuing the authorization
@@ -54,7 +54,7 @@ end
 
 if request.success?
   # The request was accepted by the user.
-  authorization = request.authorization
+  auth = request.auth
 else
   # The request was rejected by the user.
 end
@@ -63,7 +63,7 @@ end
 ### Signing Out
 
 ```ruby
-authorization.destroy
+auth.destroy
 ```
 
 ## Contributing
