@@ -1,4 +1,5 @@
 require 'active_support/core_ext/module/delegation'
+require 'i18n'
 
 require 'launchkey/version'
 

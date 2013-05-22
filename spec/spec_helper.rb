@@ -11,6 +11,9 @@ end
 require 'rspec'
 require 'ffaker'
 require 'factory_girl'
+require 'yaml'
+
+LAUNCHKEY_CONFIG = YAML.load File.read(File.expand_path('../config.yml', __FILE__))
 
 require 'launchkey'
 
@@ -19,6 +22,12 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     FactoryGirl.find_definitions
+  end
+
+  config.before(:each) do
+    LAUNCHKEY_CONFIG.each do |option, value|
+      LaunchKey.config.send :"#{option}=", value
+    end
   end
 
   # Run specs in random order to surface order dependencies. If you find an
