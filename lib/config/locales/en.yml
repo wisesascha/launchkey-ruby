@@ -2,7 +2,16 @@ en:
   launchkey:
     errors:
       messages:
+        invalid_keypair:
+          message: "The configured RSA keypair is invalid or malformed. %{original_exception}"
+          summary: "A valid keypair is required to encrypt, decrypt, sign, and verify requests to and from LaunchKey."
+          resolution: "Check that a valid keypair has been set."
         misconfiguration:
           message: "LaunchKey has not been fully configured."
-          summary: "A domain, application ID, secret, and private key are required."
+          summary: "A domain, application ID, secret, and keypair are required."
           resolution: "Check the documentation for a more detailed explanation of required configuration options: domain, app_id, app_secret, private_key, passphrase."
+        private_key_missing:
+          message: "The configured RSA keypair is missing a private key."
+          summary: "A private key is required to decrypt responses from LaunchKey. It is possible your passphrase may be incorrect or the supplied keypair only contained a public key."
+          resolution: "Check that a valid keypair and passphrase have been set."
+
