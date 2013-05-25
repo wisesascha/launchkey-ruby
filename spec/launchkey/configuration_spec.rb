@@ -162,6 +162,31 @@ describe LaunchKey::Configuration do
     end
   end
 
+  describe '#endpoint' do
+
+    let(:config) do
+      build(:config)
+    end
+
+    subject(:endpoint) do
+      config.endpoint
+    end
+
+    context 'when #env is "production"' do
+
+      it { should eq('https://api.launchkey.com/v1/') }
+    end
+
+    context 'when #env is "test"' do
+
+      let(:config) do
+        build(:config, env: 'test')
+      end
+
+      it { should eq('http://staging-api.launchkey.com/v1/') }
+    end
+  end
+
   describe '#validate!' do
 
     [:domain, :app_id, :app_secret, :keypair].each do |attribute|
@@ -198,6 +223,45 @@ describe LaunchKey::Configuration do
         block = -> { 'blah blah blah' }
         config.middleware(&block)
         expect(config.middleware).to eq(block)
+      end
+    end
+  end
+
+  describe '#ca_bundle_path' do
+
+    context 'when #use_system_ssl_cert_chain is true' do
+
+      before do
+        config.use_system_ssl_cert_chain = true
+      end
+
+      context 'when system cert chain exists' do
+
+        before do
+          File.stub(:exist?).and_return(true)
+        end
+
+        it 'returns OpenSSL::X509::DEFAULT_CERT_FILE' do
+          stub_const('OpenSSL::X509::DEFAULT_CERT_FILE', '/usr/local/winning')
+          expect(config.ca_bundle_path).to eq(OpenSSL::X509::DEFAULT_CERT_FILE)
+        end
+      end
+
+      context 'when system cert chain does not exist' do
+
+        before do
+          File.stub(:exist?).and_return(false)
+        end
+
+        it 'returns #local_cert_path' do
+          expect(config.ca_bundle_path).to eq(config.local_cert_path)
+        end
+      end
+    end
+
+    context 'when #use_system_cert_chain is false' do
+
+      it 'returns #local_cert_path' do
       end
     end
   end

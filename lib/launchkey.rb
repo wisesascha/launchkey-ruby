@@ -13,6 +13,9 @@ I18n.load_path << File.join(File.dirname(__FILE__), 'config', 'locales', 'en.yml
 module LaunchKey
   extend self
 
+  ENDPOINT      = 'https://api.launchkey.com/v1/'.freeze
+  TEST_ENDPOINT = 'http://staging-api.launchkey.com/v1/'.freeze
+
   def configure
     yield(config)
   end

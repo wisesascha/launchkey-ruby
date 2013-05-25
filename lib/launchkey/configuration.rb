@@ -27,6 +27,51 @@ module LaunchKey
     attr_accessor :passphrase
 
     ##
+    # @return [true, false]
+    #   `true` to use whatever CAs OpenSSL has installed on your system, `false`
+    #   to use the ca-bundle.crt file included in LaunchKey itself
+    #   (reccomended and default).
+    attr_accessor :use_system_ssl_cert_chain
+
+    alias use_system_ssl_cert_chain? use_system_ssl_cert_chain
+
+    ##
+    # @return [Fixnum]
+    #   The HTTP open timeout in seconds (defaults to 2).
+    attr_accessor :http_open_timeout
+
+    ##
+    # @return [Fixnum]
+    #   The HTTP read timeout in seconds (defaults to 5).
+    attr_accessor :http_read_timeout
+
+    ##
+    # @return [true, false]
+    #   `true` to log extra debug info, `false` to suppress.
+    attr_accessor :debug
+
+    alias debug? debug
+
+    def initialize
+      @use_system_ssl_cert_chain = false
+      @http_open_timeout         = 2
+      @http_read_timeout         = 5
+      @debug                     = false
+    end
+
+    ##
+    # @return [Logger]
+    #   The logger.
+    def logger
+      @logger ||= (rails_logger || default_logger)
+    end
+
+    ##
+    # @return [Logger]
+    #   The logger.
+    attr_writer :logger
+
+    ##
     # @return [OpenSSL::PKey::RSA]
     #   The application's RSA keypair.
     #
@@ -107,6 +152,19 @@ module LaunchKey
     end
 
     ##
+    # @return [String]
+    #   The LaunchKey API endpoint to make requests to, defaults to either
+    #   {ENDPOINT} or {TEST_ENDPOINT} depending on the {#env}.
+    def endpoint
+      @endpoint ||= env.production? ? ENDPOINT.dup : TEST_ENDPOINT.dup
+    end
+
+    ##
+    # @return [String]
+    #   The LaunchKey API endpoint to make requests to.
+    attr_writer :endpoint
+
+    ##
     # @param [String] value
     #   LaunchKey's public RSA key.
     #
@@ -136,7 +194,33 @@ module LaunchKey
       end
     end
 
+    ##
+    # @api private
+    def ca_bundle_path
+      if use_system_ssl_cert_chain? && File.exist?(OpenSSL::X509::DEFAULT_CERT_FILE)
+        OpenSSL::X509::DEFAULT_CERT_FILE
+      else
+        local_cert_path
+      end
+    end
+
+    ##
+    # @api private
+    def local_cert_path
+      File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
+    end
+
     private
+
+    def rails_logger
+      defined?(Rails) && Rails.respond_to?(:logger) && Rails.logger
+    end
+
+    def default_logger
+      Logger.new($stdout).tap do |logger|
+        logger.level = Logger::INFO
+      end
+    end
 
     def unwrap_public_key(key)
       Base64.decode64 key.gsub("\n", '').gsub(/-----(BEGIN|END) PUBLIC KEY-----/, '')
