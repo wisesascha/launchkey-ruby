@@ -1,5 +1,4 @@
-task :pry do
-  require 'launchkey'
+task pry: :environment do
   require 'pry'
   Pry.start
 end
