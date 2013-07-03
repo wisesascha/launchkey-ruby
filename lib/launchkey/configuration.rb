@@ -1,8 +1,11 @@
-require 'active_support/string_inquirer'
 require 'openssl'
 
 module LaunchKey
   class Configuration
+
+    OPTIONS = [:domain, :app_id, :app_secret, :passphrase,
+               :use_system_ssl_cert_chain, :http_open_timeout,
+               :http_read_timeout, :debug].freeze
 
     REQUIRED_OPTIONS = [:domain, :app_id, :app_secret, :keypair].freeze
 
@@ -52,11 +55,45 @@ module LaunchKey
 
     alias debug? debug
 
-    def initialize
+    def initialize(options = {})
       @use_system_ssl_cert_chain = false
       @http_open_timeout         = 2
       @http_read_timeout         = 5
       @debug                     = false
+
+      update(options)
+    end
+
+    ##
+    # Merges the supplied `options`, overwriting already set options.
+    #
+    # @param [{ Symbol => Object}] options
+    #   The configuration options to set.
+    def update(options = {})
+      options.each do |option, value|
+        if OPTIONS.include? option.to_sym
+          send :"#{option}=", value
+        end
+      end
+    end
+
+    alias merge! update
+
+    ##
+    # @param [{ Symbol => Object}] options
+    #   The configuration options to set.
+    #
+    # @return [Config]
+    #   A new configuration merged with supplied `options`.
+    def merge(options = {})
+      dup.update(options)
+    end
+
+    ##
+    # @return [{ Symbol => Object }]
+    #   The configuration options as a `Hash`.
+    def to_hash
+      Hash[OPTIONS.collect { |option| [option, send(option)] }]
     end
 
     ##
@@ -84,17 +121,7 @@ module LaunchKey
         raise Errors::Misconfiguration
       end
 
-      begin
-        @keypair = OpenSSL::PKey::RSA.new(@raw_keypair, passphrase)
-      rescue OpenSSL::PKey::RSAError
-        raise Errors::InvalidKeypair, $!
-      end
-
-      unless @keypair.private?
-        raise Errors::PrivateKeyMissing
-      end
-
-      @keypair
+      @keypair = RSAKey.new @raw_keypair, passphrase: passphrase
     end
 
     ##
@@ -128,35 +155,10 @@ module LaunchKey
     end
 
     ##
-    # @example Use staging API.
-    #     LaunchKey.env.staging?
-    #     # => false
-    #
-    #     LaunchKey.config.env = 'staging'
-    #
-    #     LaunchKey.env.staging?
-    #     # => true
-    #
-    # @return [ActiveSupport::StringInquirer]
-    #   The environment to use when making authorization requests, defaults
-    #   to `production`.
-    def env
-      @env ||= ActiveSupport::StringInquirer.new('production')
-    end
-
-    ##
-    # @param [String] value
-    #   The environment to use when making authorization requests.
-    def env=(value)
-      @env = ActiveSupport::StringInquirer.new(value)
-    end
-
-    ##
     # @return [String]
-    #   The LaunchKey API endpoint to make requests to, defaults to either
-    #   {ENDPOINT} or {TEST_ENDPOINT} depending on the {#env}.
+    #   The LaunchKey API endpoint to make requests to, defaults to {ENDPOINT}.
     def endpoint
-      @endpoint ||= env.production? ? ENDPOINT.dup : TEST_ENDPOINT.dup
+      @endpoint ||= ENDPOINT.dup
     end
 
     ##
@@ -170,7 +172,7 @@ module LaunchKey
     #
     # @api private
     def api_public_key=(value)
-      @api_public_key = OpenSSL::PKey::RSA.new unwrap_public_key(value)
+      @api_public_key = RSAKey.new value, public_only: true
     end
 
     ##
@@ -207,7 +209,7 @@ module LaunchKey
     ##
     # @api private
     def local_cert_path
-      File.expand_path(File.join("..", "..", "..", "resources", "ca-bundle.crt"), __FILE__)
+      File.expand_path(File.join('..', '..', '..', 'resources', 'ca-bundle.crt'), __FILE__)
     end
 
     private
@@ -220,10 +222,6 @@ module LaunchKey
       Logger.new($stdout).tap do |logger|
         logger.level = Logger::INFO
       end
-    end
-
-    def unwrap_public_key(key)
-      Base64.decode64 key.gsub("\n", '').gsub(/-----(BEGIN|END) PUBLIC KEY-----/, '')
     end
   end # Configuration
 end # LaunchKey

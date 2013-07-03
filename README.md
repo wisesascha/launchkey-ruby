@@ -19,6 +19,12 @@ Or install it yourself as:
 
 ## Configuration
 
+Run the Rails generator:
+
+    $ rails g launchkey:install
+
+Or if using a different framework:
+
 ```ruby
 require 'launchkey'
 
@@ -33,37 +39,40 @@ end
 
 ## Usage
 
-### Signing In
+### Authorization
 
 Make an authorization request with the user's LaunchKey username:
 
 ```ruby
-request = LaunchKey.authorize('johnwayne')
-# => #<LaunchKey::AuthRequest username:"johnwayne", token:"...">
+auth_request = LaunchKey.authorize('johnwayne')
+# => "71xmyusohv0171fg..."
 ```
 
-The returned request object is responsible for continuing the authorization
-process. After the authorization request is made, the user is responsible for
-either accepting or rejecting the authorization. To continue the process, you
-must poll until a response is given.
+The returned string is needed for continuing as well as terminating the
+authorization. After the authorization request is made, the user is responsible
+for either accepting or rejecting the authorization. To continue the process,
+you must poll until a Hash containing the final `auth` payload is returned:
 
 ```ruby
-until request.finished?
-  request.poll
-end
+auth_response = LaunchKey.poll_request(auth_request)
+# => { "message": "Pending response", ... }
 
-if request.success?
-  # The request was accepted by the user.
-  auth = request.auth
-else
-  # The request was rejected by the user.
-end
+auth_response = LaunchKey.poll_request(auth_request)
+# => { "auth" => "...", "user_hash": "..." }
 ```
 
-### Signing Out
+Check if the client accepted or rejected the authorization request:
 
 ```ruby
-auth.destroy
+LaunchKey.authorized?(auth_response)
+# => true
+```
+
+### Deauthorization
+
+```ruby
+LaunchKey.deauthorize(auth_request)
+# => true
 ```
 
 ## Contributing

@@ -1,0 +1,24 @@
+
+===============================================================================
+
+Before continuing, you may need to update config/initializers/launchkey.rb to
+suit your needs. The following environment variables need to be set:
+
+    export LAUNCHKEY_DOMAIN=https://yourdomain.tld
+    export LAUNCHKEY_APP_ID=your application ID
+    export LAUNCKEY_APP_SECRET=your application secret
+
+Additionally, an encrypted keypair was automatically generated at
+config/launchkey_keypair.pem. Skip the next step if you choose to delete it and
+use your own existing keypair:
+
+Export LAUNCHKEY_KEYPAIR_PASSPHRASE with the following value:
+
+<%= @passphrase %>
+
+Update your application through the LaunchKey dashboard with the following
+public key:
+
+<%= @keypair.public_key.to_pem.strip %>
+
+===============================================================================

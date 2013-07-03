@@ -25,7 +25,7 @@ describe LaunchKey::Configuration do
 
   describe '#keypair' do
 
-    it 'returns same instance of OpenSSL::PKey::RSA' do
+    it 'returns same instance' do
       expect(config.keypair.object_id).to eq(config.keypair.object_id)
     end
 
@@ -53,8 +53,8 @@ describe LaunchKey::Configuration do
         config.keypair
       end
 
-      it 'returns OpenSSL::PKey::RSA' do
-        expect(config.keypair).to be_kind_of(OpenSSL::PKey::RSA)
+      it 'returns RSAKey' do
+        expect(config.keypair).to be_kind_of(LaunchKey::RSAKey)
       end
     end
 
@@ -98,17 +98,15 @@ describe LaunchKey::Configuration do
       OpenSSL::PKey::RSA.new(1024)
     end
 
-    let(:keypair_array) do
-      [keypair.to_pem, keypair.public_key.to_pem]
+    let(:keypair_pem) do
+      [keypair.to_pem, keypair.public_key.to_pem].join
     end
 
-    it 'stores supplied value as OpenSSL::PKey::RSA' do
-      config.keypair = keypair_array.join
+    it 'stores supplied value as RSAKey' do
+      config.keypair = keypair
 
-      expect(config.keypair).to be_kind_of(OpenSSL::PKey::RSA)
-      expect(
-        [config.keypair.to_pem, config.keypair.public_key.to_pem]
-      ).to eq(keypair_array)
+      expect(config.keypair).to be_kind_of(LaunchKey::RSAKey)
+      expect(config.keypair.to_pem).to eq(keypair_pem)
     end
   end
 
@@ -126,10 +124,10 @@ describe LaunchKey::Configuration do
       generate(:public_key)
     end
 
-    it 'stores supplied value as OpenSSL::PKey::RSA' do
+    it 'stores supplied value as RSAKey' do
       config.api_public_key = public_key
 
-      expect(config.api_public_key).to be_kind_of(OpenSSL::PKey::RSA)
+      expect(config.api_public_key).to be_kind_of(LaunchKey::RSAKey)
       expect(config.api_public_key.to_pem).to eq(public_key)
     end
   end
@@ -183,7 +181,7 @@ describe LaunchKey::Configuration do
         build(:config, env: 'test')
       end
 
-      it { should eq('http://staging-api.launchkey.com/v1/') }
+      it { should eq('https://staging-api.launchkey.com/v1/') }
     end
   end
 
