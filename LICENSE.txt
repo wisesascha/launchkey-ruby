@@ -1,4 +1,4 @@
-Copyright (c) 2013 Gabe Evans
+Copyright (c) 2013 LaunchKey, Inc.
 
 MIT License
 
