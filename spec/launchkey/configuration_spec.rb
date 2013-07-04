@@ -23,6 +23,74 @@ describe LaunchKey::Configuration do
     end
   end
 
+  describe '#initialize' do
+
+    subject(:config) do
+      described_class.new(domain: 'example.com', app_id: '12345')
+    end
+
+    it 'sets supplied config options' do
+      expect(config.domain).to eq('example.com')
+      expect(config.app_id).to eq('12345')
+    end
+  end
+
+  [:update, :merge!].each do |method_name|
+
+    describe "##{method_name}" do
+
+      it 'returns self' do
+        expect(config.update({}).object_id).to eq(config.object_id)
+      end
+    end
+  end
+
+  describe '#merge' do
+
+    it 'returns a LaunchKey::Configuration' do
+      expect(config.merge({})).to be_a(LaunchKey::Configuration)
+    end
+
+    it 'is not the same instance' do
+      expect(config.merge({}).object_id).not_to eq(config.object_id)
+    end
+
+    it 'sets supplied options' do
+      merged = config.merge(domain: 'foo.com', app_id: '123')
+      expect(merged.domain).to eq('foo.com')
+      expect(merged.app_id).to eq('123')
+    end
+
+    context 'when not overridden' do
+
+      it 'keeps original option' do
+        merged = config.merge({})
+        LaunchKey::Configuration::OPTIONS.each do |option|
+          expect(merged.send(option)).to eq(config.send(option))
+        end
+      end
+    end
+  end
+
+  describe '#to_hash' do
+
+    it 'returns a Hash' do
+      expect(config.to_hash).to be_a(Hash)
+    end
+
+    describe 'returned Hash' do
+
+      [:domain, :app_id, :app_secret, :keypair, :passphrase, :endpoint,
+       :use_system_ssl_cert_chain, :http_open_timeout, :http_read_timeout,
+       :debug].each do |option|
+
+        it "has #{option.inspect}" do
+          expect(config.to_hash[option]).to eq(config.send(option))
+        end
+      end
+    end
+  end
+
   describe '#keypair' do
 
     it 'returns same instance' do
@@ -36,7 +104,7 @@ describe LaunchKey::Configuration do
       end
 
       let(:raw_keypair) do
-        LaunchKey::Util.generate_rsa_keypair(passphrase: passphrase, bits: 1024)
+        LaunchKey::RSAKey.generate(1024).to_pem(passphrase)
       end
 
       let(:keypair_double) do
@@ -77,7 +145,7 @@ describe LaunchKey::Configuration do
     context 'when passphrase is incorrect' do
 
       it 'raises Errors::PrivateKeyMissing' do
-        config.keypair    = LaunchKey::Util.generate_rsa_keypair(passphrase: 'top secret', bits: 1024)
+        config.keypair    = LaunchKey::RSAKey.generate(1024).to_pem('top secret')
         config.passphrase = 'secret top'
         expect { config.keypair }.to raise_error(LaunchKey::Errors::PrivateKeyMissing)
       end
@@ -108,6 +176,18 @@ describe LaunchKey::Configuration do
       expect(config.keypair).to be_kind_of(LaunchKey::RSAKey)
       expect(config.keypair.to_pem).to eq(keypair_pem)
     end
+
+    context 'when supplied value is RSAKey' do
+
+      let(:keypair) do
+        LaunchKey::RSAKey.generate(1024)
+      end
+
+      it 'does not reinitialize keypair' do
+        config.keypair = keypair
+        expect(config.keypair.object_id).to eq(keypair.object_id)
+      end
+    end
   end
 
   describe '#api_public_key' do
@@ -132,34 +212,6 @@ describe LaunchKey::Configuration do
     end
   end
 
-  describe '#env' do
-
-    subject(:config) do
-      described_class.new
-    end
-
-    it 'defaults to production' do
-      expect(config.env).to be_production
-    end
-
-    it 'returns configured environment' do
-      config.env = 'awesome'
-      expect(config.env).to be_awesome
-    end
-
-    it 'returns an ActiveSupport::StringInquirer' do
-      expect(config.env).to be_kind_of(ActiveSupport::StringInquirer)
-    end
-  end
-
-  describe '#env=' do
-
-    it 'sets environment to supplied value' do
-      config.env = 'foo'
-      expect(config.env).to eq('foo')
-    end
-  end
-
   describe '#endpoint' do
 
     let(:config) do
@@ -170,18 +222,8 @@ describe LaunchKey::Configuration do
       config.endpoint
     end
 
-    context 'when #env is "production"' do
-
-      it { should eq('https://api.launchkey.com/v1/') }
-    end
-
-    context 'when #env is "test"' do
-
-      let(:config) do
-        build(:config, env: 'test')
-      end
-
-      it { should eq('https://staging-api.launchkey.com/v1/') }
+    it 'defaults to https://api.launchkey.com/v1/' do
+      expect(endpoint).to eq('https://api.launchkey.com/v1/')
     end
   end
 

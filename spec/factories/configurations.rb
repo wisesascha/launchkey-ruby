@@ -3,7 +3,7 @@ require 'securerandom'
 FactoryGirl.define do
   sequence(:token)   { SecureRandom.base64(32).gsub(/[^\d\w]/, '') }
 
-  sequence(:keypair) { LaunchKey::Util.generate_rsa_keypair(bits: 1024) }
+  sequence(:keypair) { LaunchKey::RSAKey.generate.to_pem }
 
   sequence(:public_key) do
     pair = OpenSSL::PKey::RSA.new(1024)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LaunchKey::RSAKey, :focus do
+describe LaunchKey::RSAKey do
 
   let(:key) do
     described_class.generate(2048)

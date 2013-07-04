@@ -3,7 +3,7 @@ require 'openssl'
 module LaunchKey
   class Configuration
 
-    OPTIONS = [:domain, :app_id, :app_secret, :passphrase,
+    OPTIONS = [:domain, :app_id, :app_secret, :keypair, :passphrase, :endpoint,
                :use_system_ssl_cert_chain, :http_open_timeout,
                :http_read_timeout, :debug].freeze
 
@@ -69,12 +69,16 @@ module LaunchKey
     #
     # @param [{ Symbol => Object}] options
     #   The configuration options to set.
-    def update(options = {})
+    #
+    # @return [self]
+    def update(options)
       options.each do |option, value|
         if OPTIONS.include? option.to_sym
           send :"#{option}=", value
         end
       end
+
+      self
     end
 
     alias merge! update
@@ -85,7 +89,7 @@ module LaunchKey
     #
     # @return [Config]
     #   A new configuration merged with supplied `options`.
-    def merge(options = {})
+    def merge(options)
       dup.update(options)
     end
 
@@ -128,8 +132,12 @@ module LaunchKey
     # @param [String] value
     #   The application's RSA keypair.
     def keypair=(value)
-      @keypair     = nil
-      @raw_keypair = value
+      if value.is_a?(RSAKey)
+        @keypair = value
+      else
+        @keypair     = nil
+        @raw_keypair = value
+      end
     end
 
     ##
