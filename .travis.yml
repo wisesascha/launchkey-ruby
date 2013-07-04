@@ -12,6 +12,7 @@ notifications:
   email:
     recipients:
       - gabe@ga.be
+      - developers@launchkey.com
 matrix:
   allow_failures:
     - rvm: jruby-19mode
