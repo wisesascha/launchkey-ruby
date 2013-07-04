@@ -8,10 +8,12 @@ Gem::Specification.new do |spec|
   spec.version       = LaunchKey::VERSION
   spec.authors       = ['Gabe Evans']
   spec.email         = ['gabe@ga.be']
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ''
+  spec.summary       = %q{Passwordless authentication gem using LaunchKey's REST API.}
+  spec.description   = %q{LaunchKey is evolving user authentication and killing passwords with physical multi-factor authentication through your smartphone or tablet.}
+  spec.homepage      = 'https://launchkey.com/docs/api/overview'
   spec.license       = 'MIT'
+
+  spec.required_ruby_version = '>= 1.9.3'
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
