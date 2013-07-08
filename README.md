@@ -30,8 +30,8 @@ require 'launchkey'
 
 LaunchKey.configure do |config|
   config.domain      = 'http://youdomain.tld'
-  config.app_id      = 1234567890
-  config.app_secret  = 'abcdefghijklmnopqrstuvwyz'
+  config.app_key     = 1234567890
+  config.secret_key  = 'abcdefghijklmnopqrstuvwyz'
   config.keypair     = File.read('path/to/rsa-keypair.pem')
   config.passphrase  = 'private key passphrase'
 end

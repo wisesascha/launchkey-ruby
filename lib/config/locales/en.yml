@@ -9,7 +9,7 @@ en:
         misconfiguration:
           message: "LaunchKey has not been fully configured."
           summary: "A domain, application ID, secret, and keypair are required."
-          resolution: "Check the documentation for a more detailed explanation of required configuration options: domain, app_id, app_secret, private_key, passphrase."
+          resolution: "Check the documentation for a more detailed explanation of required configuration options: domain, app_key, secret_key, keypair, passphrase."
         private_key_missing:
           message: "The configured RSA keypair is missing a private key."
           summary: "A private key is required to decrypt responses from LaunchKey. It is possible your passphrase may be incorrect or the supplied keypair only contained a public key."

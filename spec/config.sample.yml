@@ -1,7 +1,7 @@
 ---
 domain: http://example.com
-app_id: 1234567890
-app_secret: abcdefghijklmnopqrstuvwxyz
+app_key: 1234567890
+secret_key: abcdefghijklmnopqrstuvwxyz
 keypair: |
   your public and private RSA keys...
 passphrase: s3cr3t!
