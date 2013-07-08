@@ -12,7 +12,7 @@ describe LaunchKey::Configuration do
     generate(:token)
   end
 
-  [:domain, :app_id, :app_secret, :passphrase].each do |attribute|
+  [:domain, :app_key, :secret_key, :passphrase].each do |attribute|
 
     describe "##{attribute}" do
 
@@ -26,12 +26,12 @@ describe LaunchKey::Configuration do
   describe '#initialize' do
 
     subject(:config) do
-      described_class.new(domain: 'example.com', app_id: '12345')
+      described_class.new(domain: 'example.com', app_key: '12345')
     end
 
     it 'sets supplied config options' do
       expect(config.domain).to eq('example.com')
-      expect(config.app_id).to eq('12345')
+      expect(config.app_key).to eq('12345')
     end
   end
 
@@ -56,9 +56,9 @@ describe LaunchKey::Configuration do
     end
 
     it 'sets supplied options' do
-      merged = config.merge(domain: 'foo.com', app_id: '123')
+      merged = config.merge(domain: 'foo.com', app_key: '123')
       expect(merged.domain).to eq('foo.com')
-      expect(merged.app_id).to eq('123')
+      expect(merged.app_key).to eq('123')
     end
 
     context 'when not overridden' do
@@ -80,7 +80,7 @@ describe LaunchKey::Configuration do
 
     describe 'returned Hash' do
 
-      [:domain, :app_id, :app_secret, :keypair, :passphrase, :endpoint,
+      [:domain, :app_key, :secret_key, :keypair, :passphrase, :endpoint,
        :use_system_ssl_cert_chain, :http_open_timeout, :http_read_timeout,
        :debug].each do |option|
 
@@ -229,7 +229,7 @@ describe LaunchKey::Configuration do
 
   describe '#validate!' do
 
-    [:domain, :app_id, :app_secret, :keypair].each do |attribute|
+    [:domain, :app_key, :secret_key, :keypair].each do |attribute|
 
       context "when not supplied #{attribute}" do
 

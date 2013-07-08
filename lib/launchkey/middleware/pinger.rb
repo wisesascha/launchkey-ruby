@@ -59,7 +59,7 @@ module LaunchKey
         signature  = @client.config.keypair.sign secret_key
 
         {
-          app_key:    @client.config.app_id.to_s,
+          app_key:    @client.config.app_key.to_s,
           secret_key: Base64.strict_encode64(secret_key),
           signature:  Base64.strict_encode64(signature)
         }
@@ -70,7 +70,7 @@ module LaunchKey
       end
 
       def raw_secret
-        JSON.dump secret: @client.config.app_secret, stamped: ping_timestamp
+        JSON.dump secret: @client.config.secret_key, stamped: ping_timestamp
       end
 
       def update_ping_timestamp(body)

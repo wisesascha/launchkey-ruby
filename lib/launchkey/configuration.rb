@@ -3,11 +3,11 @@ require 'openssl'
 module LaunchKey
   class Configuration
 
-    OPTIONS = [:domain, :app_id, :app_secret, :keypair, :passphrase, :endpoint,
+    OPTIONS = [:domain, :app_key, :secret_key, :keypair, :passphrase, :endpoint,
                :use_system_ssl_cert_chain, :http_open_timeout,
                :http_read_timeout, :debug].freeze
 
-    REQUIRED_OPTIONS = [:domain, :app_id, :app_secret, :keypair].freeze
+    REQUIRED_OPTIONS = [:domain, :app_key, :secret_key, :keypair].freeze
 
     ##
     # @return [String]
@@ -16,13 +16,13 @@ module LaunchKey
 
     ##
     # @return [Integer]
-    #   The application ID.
-    attr_accessor :app_id
+    #   The application key.
+    attr_accessor :app_key
 
     ##
     # @return [String]
     #   The application secret.
-    attr_accessor :app_secret
+    attr_accessor :secret_key
 
     ##
     # @return [String]

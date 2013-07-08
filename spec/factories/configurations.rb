@@ -14,8 +14,8 @@ FactoryGirl.define do
     skip_create
 
     domain      { Faker::Internet.http_url }
-    app_id      { rand(1..9_999_999) }
-    app_secret  { FactoryGirl.generate(:token) }
+    app_key     { rand(1..9_999_999) }
+    secret_key  { FactoryGirl.generate(:token) }
     keypair     { FactoryGirl.generate(:keypair) }
     passphrase  { FactoryGirl.generate(:token) }
 
