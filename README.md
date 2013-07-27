@@ -66,7 +66,7 @@ auth_response = LaunchKey.poll_request(auth_request)
 Check if the client accepted or rejected the authorization request:
 
 ```ruby
-LaunchKey.authorized?(auth_response)
+LaunchKey.authorized?(auth_response['auth'])
 # => true
 ```
 
