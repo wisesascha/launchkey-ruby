@@ -5,7 +5,7 @@ require 'json'
 
 module LaunchKey
   module Middleware
-    class Pinger < Faraday::Middleware
+    class Ping < Faraday::Middleware
 
       PING_PATH = '/v1/ping'.freeze
 

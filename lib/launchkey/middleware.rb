@@ -1,4 +1,2 @@
-require 'launchkey/middleware/pinger'
-
-Faraday.register_middleware :request,
-  launchkey_pinger: -> { LaunchKey::Middleware::Pinger }
+require 'launchkey/middleware/ping'
+require 'launchkey/middleware/raise_errors'

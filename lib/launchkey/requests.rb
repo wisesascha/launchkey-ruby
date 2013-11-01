@@ -14,7 +14,9 @@ module LaunchKey
 
     def connection
       @connection ||= Faraday.new config.endpoint, connection_options do |conn|
-        conn.request  :launchkey_pinger, self
+        conn.use Middleware::RaiseErrors
+        conn.use Middleware::Ping, self
+
         conn.request  :url_encoded
         conn.response :json, content_type: /\bjson$/
 
