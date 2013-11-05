@@ -1,14 +1,19 @@
 module LaunchKey
   module Middleware
+    ##
+    # A response middleware for Faraday that parses error responses returned by
+    # the API and raises them as {Errors::APIError}.
     class RaiseErrors < Faraday::Response::Middleware
 
+      ##
+      # HTTP response statuses that can be interpeted as a success.
       SUCCESS_CODES = 200..399
 
       def call(env)
         response = @app.call(env)
         response.on_complete do |env|
           if error?(response)
-            compose_error(response)
+            raise_error(response)
           end
         end
         response
@@ -25,7 +30,7 @@ module LaunchKey
           !response.body['successful']
       end
 
-      def compose_error(response)
+      def raise_error(response)
         case response.body
         when ::Hash
           raise Errors::APIError.new(
