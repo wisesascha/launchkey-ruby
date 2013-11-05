@@ -1,6 +1,8 @@
 require 'openssl'
 
 module LaunchKey
+  ##
+  # Defines and validates configuration options for {LaunchKey::Client}.
   class Configuration
 
     OPTIONS = [:domain, :app_key, :secret_key, :keypair, :passphrase, :endpoint,
@@ -55,6 +57,11 @@ module LaunchKey
 
     alias debug? debug
 
+    ##
+    # Initializes a new `Configuration` with optionally supplied `options`.
+    #
+    # @param [{Symbol => Object}] options
+    #   Configuration options to initialize with.
     def initialize(options = {})
       @use_system_ssl_cert_chain = false
       @http_open_timeout         = 2

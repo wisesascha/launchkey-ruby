@@ -3,6 +3,8 @@ require 'faraday_middleware'
 require 'launchkey/middleware'
 
 module LaunchKey
+  ##
+  # Shares behavior for making HTTP requests to LaunchKey.
   module Requests
     extend ActiveSupport::Concern
 

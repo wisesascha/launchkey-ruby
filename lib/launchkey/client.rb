@@ -1,4 +1,11 @@
 module LaunchKey
+  ##
+  # Handles general API actions:
+  #
+  # * Authorization
+  # * Polling
+  # * Validation
+  # * Deorbit
   class Client
     include Requests
 
@@ -7,8 +14,18 @@ module LaunchKey
     #   The client configuration.
     attr_reader :config
 
-    def initialize(config = nil, options = {})
-      @config = config || LaunchKey.config.dup
+    ##
+    # Initializes a new `Client` with optionally supplied `config` and
+    # `options`. If no `config` is supplied, a clone of {LaunchKey.config}
+    # is used.
+    #
+    # @param [Configuration] config
+    #   The configuration to use.
+    #
+    # @param [{Symbol => Object}] options
+    #   Configuration options to override.
+    def initialize(config = LaunchKey.config.dup, options = {})
+      @config = config
       @config.merge! options
     end
 
@@ -23,10 +40,51 @@ module LaunchKey
       post('auths', username: username).body['auth_request']
     end
 
+    ##
+    # Checks the status of the authorization process for the supplied
+    # `auth_request` (returned by {#authorize}).
+    #
+    # @example Poll an auth request.
+    #     auth_request = LaunchKey.authorize('bob')
+    #
+    #     until response = LaunchKey.poll_request(auth_request)
+    #       # Check periodically until a response is given
+    #       sleep 1
+    #     end
+    #
+    #     # Move on to check the response...
+    #
+    # @param [String] auth_request
+    #   The authorization request token to check.
+    #
+    # @return [{String => String}]
+    #   The response
     def poll_request(auth_request)
       get('poll', auth_request: auth_request).body
+    rescue Errors::APIError => ex
+      # HAX: Middleware::RaiseErrors should raise an Errors::PendingAuthError
+      ex.code != 70403 && raise
     end
 
+    ##
+    # Checks whether the user accepted or declined authorization in an auth
+    # response returned by {#poll_request}.
+    #
+    # @example Checking authorization.
+    #
+    #     response = LaunchKey.poll_request(auth_request)
+    #
+    #     if authorized?(response['auth'])
+    #       # User allowed the request
+    #     else
+    #       # User declined the request
+    #     end
+    #
+    # @param [String] auth_response
+    #   The auth response to validate.
+    #
+    # @return [true, false]
+    #   Whether the authorization attempt was allowed or denied.
     def authorized?(auth_response)
       auth = load_auth(auth_response)
 
@@ -41,6 +99,8 @@ module LaunchKey
       raise NotImplementedError
     end
 
+    ##
+    # Notifies LaunchKey to confirm that the user's session has ended.
     def deauthorize(auth_request)
       notify :revoke, true, auth_request
     end
