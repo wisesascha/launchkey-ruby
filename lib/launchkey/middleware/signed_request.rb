@@ -5,11 +5,12 @@ require 'json'
 
 module LaunchKey
   module Middleware
-    class Ping < Faraday::Middleware
+    ##
+    # A request middleware for Faraday that signs requests before making calls
+    # to LaunchKey's APIs.
+    class SignedRequest < Faraday::Middleware
 
       PING_PATH = '/v1/ping'.freeze
-
-      LOCK = Mutex.new
 
       def initialize(app, client)
         super(app)
