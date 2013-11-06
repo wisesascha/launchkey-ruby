@@ -95,8 +95,32 @@ module LaunchKey
       end
     end
 
-    def deorbit(orbit, signature)
-      raise NotImplementedError
+    ##
+    # Verifies the authenticity of a webook request from LaunchKey, returning
+    # the `user_hash` if successful.
+    #
+    # @param [{Symbol => String}] params
+    #   Parameters supplied by LaunchKey in webhook request.
+    #
+    # @return [String, nil]
+    #   The user hash when request is valid, `nil` otherwise
+    def deorbit(params)
+      signature = Base64.decode64(params[:signature])
+
+      unless api_public_key.verify(signature, params[:deorbit])
+        logger.debug 'Deorbit request failed: Signature mismatch'
+        # TODO: Consider raising an error for easier handling in rescue_from
+        return
+      end
+
+      payload   = JSON.parse(params[:deorbit]).with_indifferent_access
+      timestamp = Time.parse(payload[:launchkey_time])
+
+      timestamp -= ping_difference
+      logger.debug "Deorbit received with timestamp #{timestamp}"
+
+      # TODO: Consider raising a WebhookTimeoutError
+      timestamp > 5.minutes.ago and payload[:user_hash]
     end
 
     ##
