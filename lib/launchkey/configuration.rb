@@ -235,7 +235,7 @@ module LaunchKey
 
     def default_logger
       Logger.new($stdout).tap do |logger|
-        logger.level = Logger::INFO
+        logger.level = debug? ? Logger::DEBUG : Logger::INFO
       end
     end
   end # Configuration
