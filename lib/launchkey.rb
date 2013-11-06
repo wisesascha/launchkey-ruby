@@ -15,7 +15,8 @@ I18n.load_path << File.join(File.dirname(__FILE__), 'config', 'locales', 'en.yml
 module LaunchKey
   extend self
 
-  ENDPOINT = 'https://api.launchkey.com/v1/'.freeze
+  ENDPOINT  = 'https://api.launchkey.com/v1/'.freeze
+  PING_PATH = '/v1/ping'.freeze
 
   ##
   # Sets configuration options for accessing the LaunchKey API.
