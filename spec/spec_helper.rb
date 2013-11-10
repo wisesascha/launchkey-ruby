@@ -25,6 +25,8 @@ LAUNCHKEY_CONFIG = YAML.load(File.read(CONFIG_FILE))
 
 require 'launchkey'
 
+ENV['LAUNCHKEY_TEST_USER'] ||= ENV['USER']
+
 RSpec.configure do |config|
   include FactoryGirl::Syntax::Methods
 
