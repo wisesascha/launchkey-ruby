@@ -32,7 +32,12 @@ module LaunchKey
     ##
     # Starts the authorization process for the supplied `username`.
     #
+    # @example Start authorization for a user.
+    #     auth_request = LaunchKey.authorize 'bill'
+    #     # => "lyyk9ai..."
+    #
     # @param [String] username
+    #   Username of LaunchKey user to authenticate.
     #
     # @return [String]
     #   An authorization request token.
@@ -60,10 +65,12 @@ module LaunchKey
     # @return [{String => String}]
     #   The response
     def poll_request(auth_request)
-      get('poll', auth_request: auth_request).body
+      get('poll', auth_request: auth_request).body.with_indifferent_access
     rescue Errors::AuthRequestPendingError
       false
     end
+
+    alias poll poll_request
 
     ##
     # Checks whether the user accepted or declined authorization in an auth
@@ -90,7 +97,7 @@ module LaunchKey
       if valid_auth?(auth)
         notify :authenticate, true, auth[:auth_request]
       else
-        notify :authenticate, false
+        notify :authenticate, false, auth[:auth_request]
       end
     end
 

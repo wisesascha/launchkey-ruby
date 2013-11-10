@@ -1,0 +1,80 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.launchkey.com/v1/ping
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - ':user_agent:'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 10 Nov 2013 03:56:23 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '553'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - beaker.session.id=488066cc796b467c8538681ec212e056; expires=Sun, 10-Nov-2013
+        04:56:23 GMT; httponly; Path=/; secure
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains
+    body:
+      encoding: UTF-8
+      string: '{"date_stamp": "2013-04-20 21:40:02", "launchkey_time": "2013-11-10
+        03:56:23", "key": "-----BEGIN PUBLIC KEY-----\n\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8zQos4iDSjmUVrFUAg5G\nuhU6GehNKb8MCXFadRWiyLGjtbGZAk8fusQU0Uj9E3o0mne0SYESACkhyK+3M1Er\nbHlwYJHN0PZHtpaPWqsRmNzui8PvPmhm9QduF4KBFsWu1sBw0ibBYsLrua67F/wK\nPaagZRnUgrbRUhQuYt+53kQNH9nLkwG2aMVPxhxcLJYPzQCat6VjhHOX0bgiNt1i\nHRHU2phxBcquOW2HpGSWcpzlYgFEhPPQFAxoDUBYZI3lfRj49gBhGQi32qQ1YiWp\naFxOB8GA0Ny5SfI67u6w9Nz9Z9cBhcZBfJKdq5uRWjZWslHjBN3emTAKBpAUPNET\nnwIDAQAB\n\n-----END
+        PUBLIC KEY-----\n"}'
+    http_version: 
+  recorded_at: Sun, 10 Nov 2013 03:56:28 GMT
+- request:
+    method: get
+    uri: 'https://api.launchkey.com/v1/poll?app_key=:app_key:&auth_request=nanners&secret_key=:secret_key:&signature=:signature:'
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - ':user_agent:'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 10 Nov 2013 03:56:23 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '122'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - beaker.session.id=cce95f74570b45b1a9ee65be0bb687ba; expires=Sun, 10-Nov-2013
+        04:56:23 GMT; httponly; Path=/; secure
+    body:
+      encoding: UTF-8
+      string: '{"successful": false, "status_code": 400, "message": "There is no pending
+        request", "message_code": 70402, "response": ""}'
+    http_version: 
+  recorded_at: Sun, 10 Nov 2013 03:56:29 GMT
+recorded_with: VCR 2.7.0
