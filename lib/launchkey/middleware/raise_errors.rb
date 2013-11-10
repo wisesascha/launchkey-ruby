@@ -27,7 +27,7 @@ module LaunchKey
 
       def unsuccessful?(body)
         body.is_a?(::Hash) && body.has_key?('successful') &&
-          !response.body['successful']
+          !body['successful']
       end
 
       def raise_error(response)
