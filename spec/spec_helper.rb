@@ -11,17 +11,6 @@ end
 require 'rspec'
 require 'ffaker'
 require 'factory_girl'
-require 'yaml'
-
-CONFIG_FILE = if File.exist?(File.expand_path('../config.yml', __FILE__))
-  File.expand_path('../config.yml', __FILE__)
-else
-  warn 'A developer-specific configuration was not found in spec/config.yml. '+
-       'Please copy spec/config.sample.yml to spec/config.yml and edit your details.'
-  File.expand_path('../config.sample.yml', __FILE__)
-end
-
-LAUNCHKEY_CONFIG = YAML.load(File.read(CONFIG_FILE))
 
 require 'launchkey'
 
@@ -32,12 +21,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     FactoryGirl.find_definitions
-  end
-
-  config.before(:each) do
-    LAUNCHKEY_CONFIG.each do |option, value|
-      LaunchKey.config.send :"#{option}=", value
-    end
+    LaunchKeyHelpers.load_config
   end
 
   # Run specs in random order to surface order dependencies. If you find an
@@ -45,6 +29,10 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  if ENV['TRAVIS_SECURE_ENV_VARS'] != 'true'
+    config.filter_run_excluding external: true
+  end
 
   config.filter_run focus: true unless ENV['CI']
   config.run_all_when_everything_filtered = true

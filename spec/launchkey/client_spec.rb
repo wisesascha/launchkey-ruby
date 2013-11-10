@@ -130,7 +130,7 @@ describe LaunchKey::Client do
     end
   end
 
-  describe '#authorized?' do
+  describe '#authorized?', :external do
 
     let(:auth_request) do
       client.authorize(ENV['LAUNCHKEY_TEST_USER'])

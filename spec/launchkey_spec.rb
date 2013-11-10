@@ -29,13 +29,8 @@ describe LaunchKey do
       end
 
       before do
-        described_class.instance_variable_set :@config, config
+        described_class.stub(:config).and_return(config)
       end
-
-      after do
-        described_class.instance_variable_set :@config, nil
-      end
-
 
       it 'delegates to .config' do
         config.should_receive(method).with('foo')
@@ -53,11 +48,7 @@ describe LaunchKey do
       end
 
       before do
-        described_class.instance_variable_set :@client, client
-      end
-
-      after do
-        described_class.instance_variable_set :@client, nil
+        described_class.stub(:client).and_return(client)
       end
 
       it 'delegates to .client' do
