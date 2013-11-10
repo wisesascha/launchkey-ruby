@@ -61,9 +61,8 @@ module LaunchKey
     #   The response
     def poll_request(auth_request)
       get('poll', auth_request: auth_request).body
-    rescue Errors::APIError => ex
-      # HAX: Middleware::RaiseErrors should raise an Errors::PendingAuthError
-      ex.code != 70403 && raise
+    rescue Errors::AuthRequestPendingError
+      false
     end
 
     ##

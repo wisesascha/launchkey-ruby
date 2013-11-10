@@ -33,7 +33,7 @@ module LaunchKey
       def raise_error(response)
         case response.body
         when ::Hash
-          raise Errors::APIError.new(
+          raise Errors::API_ERRORS[response.body['message_code']].new(
             response.body['message'], response.body['message_code'], response
           )
         else

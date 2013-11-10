@@ -20,33 +20,88 @@ describe LaunchKey::Middleware::RaiseErrors do
         }
       end
 
-      it 'raises APIError with message and code' do
-        error = nil
+      context 'when APIError for specific code exists' do
 
-        begin
-          middleware.call(env)
-        rescue LaunchKey::Errors::APIError
-          error = $!
+        let(:error_class) do
+          Class.new(LaunchKey::Errors::APIError)
         end
 
-        expect(error.message).to eq(body['message'])
-        expect(error.code).to eq(body['message_code'])
+        before do
+          LaunchKey::Errors::API_ERRORS.stub(:[]).and_return(error_class)
+        end
+
+        it 'raises APIError for specific code' do
+          expect {
+            middleware.call(env)
+          }.to raise_error(error_class)
+        end
+
+        it 'raises APIError with message and code' do
+          error = nil
+
+          begin
+            middleware.call(env)
+          rescue LaunchKey::Errors::APIError
+            error = $!
+          end
+
+          expect(error.message).to eq(body['message'])
+          expect(error.code).to eq(body['message_code'])
+        end
+
+        it 'stores response in raised error' do
+          mock_response = Faraday::Response.new(env)
+          app.stub(:call).and_return(mock_response)
+          error = nil
+
+          begin
+            middleware.call(env)
+          rescue LaunchKey::Errors::APIError
+            error = $!
+          end
+
+          expect(error.response.object_id).to eq(
+            mock_response.object_id
+          )
+        end
       end
 
-      it 'stores response in raised error' do
-        mock_response = Faraday::Response.new(env)
-        app.stub(:call).and_return(mock_response)
-        error = nil
+      context 'when APIError for specific code does not exist' do
 
-        begin
-          middleware.call(env)
-        rescue LaunchKey::Errors::APIError
-          error = $!
+        it 'uses original APIError class' do
+          expect {
+            middleware.call(env)
+          }.to raise_error(LaunchKey::Errors::APIError)
         end
 
-        expect(error.response.object_id).to eq(
-          mock_response.object_id
-        )
+        it 'raises APIError with message and code' do
+          error = nil
+
+          begin
+            middleware.call(env)
+          rescue LaunchKey::Errors::APIError
+            error = $!
+          end
+
+          expect(error.message).to eq(body['message'])
+          expect(error.code).to eq(body['message_code'])
+        end
+
+        it 'stores response in raised error' do
+          mock_response = Faraday::Response.new(env)
+          app.stub(:call).and_return(mock_response)
+          error = nil
+
+          begin
+            middleware.call(env)
+          rescue LaunchKey::Errors::APIError
+            error = $!
+          end
+
+          expect(error.response.object_id).to eq(
+            mock_response.object_id
+          )
+        end
       end
     end
 
