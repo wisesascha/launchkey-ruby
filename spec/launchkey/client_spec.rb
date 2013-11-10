@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe LaunchKey::Client do
@@ -155,6 +157,113 @@ describe LaunchKey::Client do
 
       it 'returns false' do
         expect(authorized).to be_false
+      end
+    end
+  end
+
+  describe '#deorbit' do
+
+    let(:api_public_key) do
+      LaunchKey::RSAKey.generate
+    end
+
+    let(:timestamp) do
+      Time.now
+    end
+
+    let(:user_hash) do
+      'zomgwtfbbq'
+    end
+
+    let(:deorbit_hash) do
+      {
+        launchkey_time: timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+        user_hash:      user_hash
+      }
+    end
+
+    let(:deorbit_json) do
+      JSON.dump(deorbit_hash)
+    end
+
+    let(:signature) do
+      Base64.strict_encode64(
+        api_public_key.sign(deorbit_json)
+      )
+    end
+
+    let(:params) do
+      {
+        deorbit:   deorbit_json,
+        signature: signature
+      }
+    end
+
+    subject(:deorbit) do
+      client.deorbit(params)
+    end
+
+    before do
+      client.stub(:api_public_key).and_return(api_public_key)
+    end
+
+    context 'when signature invalid' do
+
+      let(:signature) do
+        'バナナ'
+      end
+
+      it 'returns false' do
+        expect(deorbit).to be_false
+      end
+    end
+
+    context 'when timestamp older than 5 minutes' do
+
+      let(:timestamp) do
+        6.minutes.ago
+      end
+
+      it 'returns false' do
+        expect(deorbit).to be_false
+      end
+    end
+
+    context 'when signature valid and timestamp less than 5 minutes' do
+
+      it 'returns user hash' do
+        expect(deorbit).to eq(user_hash)
+      end
+    end
+  end
+
+  describe '#deauthorize' do
+
+    let(:auth_request) do
+      'zurjfxz7e4vn9zhi775bhsxqyylk0q49'
+    end
+
+    subject(:deauthorize) do
+      client.deauthorize(auth_request)
+    end
+
+    context 'when supplied valid auth request',
+      vcr: { cassette_name: 'client/deauthorize/success' } do
+
+      it 'returns true' do
+        expect(deauthorize).to be_true
+      end
+    end
+
+    context 'when supplied invalid auth request',
+      vcr: { cassette_name: 'client/deauthorize/failure' } do
+
+      let(:auth_request) do
+        'いちご'
+      end
+
+      it 'returns false' do
+        expect(deauthorize).to be_false
       end
     end
   end

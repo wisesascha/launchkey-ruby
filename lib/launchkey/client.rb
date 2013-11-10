@@ -116,7 +116,7 @@ module LaunchKey
       unless api_public_key.verify(signature, params[:deorbit])
         logger.debug 'Deorbit request failed: Signature mismatch'
         # TODO: Consider raising an error for easier handling in rescue_from
-        return
+        return false
       end
 
       payload   = JSON.parse(params[:deorbit]).with_indifferent_access
@@ -142,8 +142,10 @@ module LaunchKey
     private
 
     def notify(action, status, auth_request = nil)
-      response = put('logs', action: action.to_s.capitalize, status: status, auth_request: auth_request).body
-      response['message'] == 'Successfully updated' ? status : false
+      put('logs', action: action.to_s.capitalize, status: status, auth_request: auth_request)
+      status
+    rescue Errors::APIError
+      false
     end
 
     def valid_auth?(auth)
