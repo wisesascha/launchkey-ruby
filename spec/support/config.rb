@@ -12,7 +12,7 @@ module LaunchKeyHelpers
         warn $!.to_s
         warn "Defaulting to a randomly generated keypair. Don't be surprised if tests break."
 
-        config.keypair = LaunchKey::RSAKey.generate
+        c.keypair = LaunchKey::RSAKey.generate
       end
     end
   end
