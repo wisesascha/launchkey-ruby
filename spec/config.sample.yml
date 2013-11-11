@@ -1,7 +1,47 @@
 ---
-domain: http://example.com
-app_key: 1234567890
-secret_key: abcdefghijklmnopqrstuvwxyz
+debug: true
+domain: <%= ENV['LAUNCHKEY_DOMAIN'] || 'http://example.com' %>
+app_key: <%= ENV['LAUNCHKEY_APP_KEY'] || '1234567890' %>
+secret_key: <%= ENV['LAUNCHKEY_SECRET_KEY'] || 'abcdefghijklmnopqrstuvwxyz' %>
+# Replace with your keypair:
 keypair: |
-  your public and private RSA keys...
-passphrase: s3cr3t!
+  -----BEGIN RSA PRIVATE KEY-----
+  Proc-Type: 4,ENCRYPTED
+  DEK-Info: AES-256-CBC,BFD8348E178FCABB9A01A366650273AE
+
+  bMAYzEskth/pKDxEkwvnmDV/ZQfh0zNM9fEI+oeF9AGTDi4OW39CrAU1L+2d7Y05
+  PNpK+OajDUNB1Um3U6k6LmzpoIfxgRe+l2zxlvULdN0W3BDZdyZKeIqnlFy4yb5y
+  YUPxks3unlF4/dvVgsjGQTnXRFsU8XAuGcPn+omsTOHae0f9UuUhJXP0gDzUvZwu
+  I2UrAROVdepB+wUNjyUNsxhkGcRNP5sSOHIo41dJkE2wANUmi4Ed9GYN/Cbl8QIw
+  ThL9Jae88TjCFJQMPSsjkN5SSqhMU0QaTCg+ifgCjJfSewvay3oeDjJ1CvBYeQlb
+  fQKdqKmquRMuwO5tGZBeafKSbzzURFI7nMQ6xXLkgnBtxE7LI9QXHVW+4CqKt+YU
+  iWK/OKT2p6vMpEJuF9BkJgV9Q/D8Kux4s/2WjZBu/TZiChC3pc0HVhkDb8CSlOMF
+  XkjV6hwyPXa8JJAeeT4v509m5lWNoCC0N/XFxYiBtSXFugrR35aWCApnM14qkN7n
+  ZnRLazVbPE64OrpMHC7dkiRDMyFpSbGTc8xf8erORwsimMW6Y3cAMWuaElIs4Vid
+  ftjy8ibQRvNbI6BnLYbcNOiM03r6lu3hTAQs4YObceVWV9NjrX5B7lVznrmMx8JA
+  2L6YoqMIJbl4kJW8ySp626+2qqdievqYOmCfKpY2b3ZEX4Oh4BUcZzWUhPeJNSwe
+  NWu2YTpxFtT/Ffc4xrIJCRravmg103hQnY0Bm1n2OSc8LTiITKpPFHnC4zFQOjkd
+  A0ES2OdgMbrqk8Ty1Re2tVIyedIMVZ949voYRcIPKytNK6RjyhB8drk0NsKQSB0E
+  pj8g4XziIAc4qy1BS5HqRbcOan24Ti38t7u5+gTA++3FUhinCedWmLyIJfQlthZ5
+  XEf1dClQr2Q/gW+UBCp8ZFnqYogt2W7oBaQ+5SyzHnRq7nmUQTGxbUCs7zfiDIaw
+  plmv3Pl0qNstJ+lyGHJfMje14AeQP/uOhu53Bxt/2PzxR0sXl2TIbJyi6P5QulCW
+  6CzW1PNAwyPFxd+yDkxt0vT/IHRLwC6PO5grwU37Rw5nzvyWka3Fd43FAwQthyzk
+  KCMGo6oYZ8hrQccetkgr75pYSCF17Z3hwQTABxr5/tldAEBqCqxtKDBI/IMxva1e
+  V4BGb6MEz6kjiuSSDrfMRcdo9SDv7raiJfDsrzkPUOyy0NM8cWqTB1yf+FKZP0rf
+  1onVwj1SgZ/sUAd7hAKrORRgrYu1xz5twawQyEUi89yLwBJZetCssE29qptvruvm
+  RdnkEIZ1za+2pD9T2MxOXhAJoaJRuDrfm7Fnufe0AAreGcZBGDedP+MMAGZAAnvj
+  uHFhc6yEZtGrGWYBFy8ZQnK1Z9KnBVnqu2HKI4+xdLZJMIZ3GYBNyaTim830dp0Z
+  212iwtRw0DQHA96yi20rmNZMidiWCW7iq77maA2gcNRteF/MqQ8xlRt7DE75+Lis
+  sJVp2de1D785h1xKPAPK1HRYgsFK7TdOn07BcjUptdWn6bno9Gw7Sv+78nUaU0XT
+  kWMl+iQiCEKmzJJfXIRWJXyGEvZ0q6GggssuH0wJGVNxj0hAHj4Z00DC+vNQjA+2
+  -----END RSA PRIVATE KEY-----
+  -----BEGIN PUBLIC KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0CFFGXfboAQQj3VVqqUg
+  rkM9Xkta4SgmrP4LP9/SK4wATSw+TcJomUizRxLL+Jpr6W37NzreWxRoaEGp7rn4
+  wUATSjC3fCbc1RKWSMcUvgbp6Y0qrFY0YuLWy1ltTC16Y4Gf8g9UifLWqVWPfIPe
+  JbdbYchWOxdnBN2Q1La5e2CfXOExulj8TxW81d7rGUa8iv4IlKpJZf/eCVZdMRtn
+  FdwfHT+El0ER7DqeGAf1F4Abr7Ku19zU0D1QYgdAYhYpP1lO/A1MLCI2YsH/S+q4
+  DBPFgv0b0CXWnUiu3RSmsCVDY7nrVYU6EMlBxuDxGkhCVukhLEy6zc+WXb7ASrfy
+  OQIDAQAB
+  -----END PUBLIC KEY-----
+passphrase: <%= ENV['LAUNCHKEY_KEYPAIR_PASSPHRASE'] || 's3cr3t!' %>

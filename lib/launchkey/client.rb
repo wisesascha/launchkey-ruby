@@ -32,7 +32,12 @@ module LaunchKey
     ##
     # Starts the authorization process for the supplied `username`.
     #
+    # @example Start authorization for a user.
+    #     auth_request = LaunchKey.authorize 'bill'
+    #     # => "lyyk9ai..."
+    #
     # @param [String] username
+    #   Username of LaunchKey user to authenticate.
     #
     # @return [String]
     #   An authorization request token.
@@ -60,11 +65,12 @@ module LaunchKey
     # @return [{String => String}]
     #   The response
     def poll_request(auth_request)
-      get('poll', auth_request: auth_request).body
-    rescue Errors::APIError => ex
-      # HAX: Middleware::RaiseErrors should raise an Errors::PendingAuthError
-      ex.code != 70403 && raise
+      get('poll', auth_request: auth_request).body.with_indifferent_access
+    rescue Errors::AuthRequestPendingError
+      false
     end
+
+    alias poll poll_request
 
     ##
     # Checks whether the user accepted or declined authorization in an auth
@@ -91,7 +97,7 @@ module LaunchKey
       if valid_auth?(auth)
         notify :authenticate, true, auth[:auth_request]
       else
-        notify :authenticate, false
+        notify :authenticate, false, auth[:auth_request]
       end
     end
 
@@ -110,7 +116,7 @@ module LaunchKey
       unless api_public_key.verify(signature, params[:deorbit])
         logger.debug 'Deorbit request failed: Signature mismatch'
         # TODO: Consider raising an error for easier handling in rescue_from
-        return
+        return false
       end
 
       payload   = JSON.parse(params[:deorbit]).with_indifferent_access
@@ -136,8 +142,10 @@ module LaunchKey
     private
 
     def notify(action, status, auth_request = nil)
-      response = put('logs', action: action.to_s.capitalize, status: status, auth_request: auth_request).body
-      response['message'] == 'Successfully updated' ? status : false
+      put('logs', action: action.to_s.capitalize, status: status, auth_request: auth_request)
+      status
+    rescue Errors::APIError
+      false
     end
 
     def valid_auth?(auth)

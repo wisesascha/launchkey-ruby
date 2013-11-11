@@ -1,0 +1,120 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.launchkey.com/v1/ping
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - ':user_agent:'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 10 Nov 2013 03:57:18 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '553'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - beaker.session.id=63fe941c163742ee92cc19f670625a99; expires=Sun, 10-Nov-2013
+        04:57:18 GMT; httponly; Path=/; secure
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains
+    body:
+      encoding: UTF-8
+      string: '{"date_stamp": "2013-04-20 21:40:02", "launchkey_time": "2013-11-10
+        03:57:18", "key": "-----BEGIN PUBLIC KEY-----\n\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8zQos4iDSjmUVrFUAg5G\nuhU6GehNKb8MCXFadRWiyLGjtbGZAk8fusQU0Uj9E3o0mne0SYESACkhyK+3M1Er\nbHlwYJHN0PZHtpaPWqsRmNzui8PvPmhm9QduF4KBFsWu1sBw0ibBYsLrua67F/wK\nPaagZRnUgrbRUhQuYt+53kQNH9nLkwG2aMVPxhxcLJYPzQCat6VjhHOX0bgiNt1i\nHRHU2phxBcquOW2HpGSWcpzlYgFEhPPQFAxoDUBYZI3lfRj49gBhGQi32qQ1YiWp\naFxOB8GA0Ny5SfI67u6w9Nz9Z9cBhcZBfJKdq5uRWjZWslHjBN3emTAKBpAUPNET\nnwIDAQAB\n\n-----END
+        PUBLIC KEY-----\n"}'
+    http_version: 
+  recorded_at: Sun, 10 Nov 2013 03:57:24 GMT
+- request:
+    method: post
+    uri: https://api.launchkey.com/v1/auths
+    body:
+      encoding: US-ASCII
+      string: 'app_key=:app_key:&secret_key=MR04uyoKnLf9PJB3d1Pub%2B6dy7NRTOZoP5Uj%2FhCERJHgDyUb%2BrD93VNV4fE4DN1dns8Vy%2FejkgeN4JBrwudFxkO8fbmyS4bthxg6kvmyZDpYksFOoaCeMBu4GR7uZJBBaaP6SPNzFMbkc8ix0FNYS0qDhOHMN0Mq2Dg3RqvMyffwqP3CY7HdfFVaRc1woiMCp%2FIkI%2FWoAceq6NPRy5LhFfvcoLR1tDIcETzSoM4aXUIWoJQQRWWQHrPN5Lg8zvH9mIL%2Ftb4wJy3fAGOKBbxCcA8NW%2BLmW9iSAZkOgFhOZjmYHI1ZIOTUwWPubbYfawECJ%2B%2BpcjTDjBDVRC9AqQwKsw%3D%3D&signature=Q4RIPF%2BZS1QirpyGGJPdwsH8mPZp7c2fAjnJgU1229CT5OfePwfVJpHBA%2F4PvvzZCjvLxlPyZTzxDTSBeAk%2FM8K%2FFEdczVbA2LAmidQjSNPvoVtvA8QsB2wJSXoh8A91tH5JrRYM6q%2BomJp0aUmzQy%2BBAY9%2BkcI5PsP7f%2FSClgybeVW1sifCnFSAmLoV27xt6KVA58mYLf5oaWHNLlf22a8omUouCojGIxL8n5bBvK%2BWD48Ci6%2B1jO6GZTEM%2Bcs9FcLtodxSJcnCk5%2F4tJJeKSXdtBuPOqCz1tqfMkVpYnw0W1bEsFeDhdDyKBPbWsYgLFNpLyM4%2FZdvCYa1ERGMpw%3D%3D&username=:test_user:'
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - ':user_agent:'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 10 Nov 2013 03:57:19 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '52'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - beaker.session.id=fb54527e09734cbba5b006918c7cc8e8; expires=Sun, 10-Nov-2013
+        04:57:19 GMT; httponly; Path=/; secure
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains
+    body:
+      encoding: UTF-8
+      string: '{"auth_request": "fa8svf9fs4bgw3z6k9fuxy0ml3ujlsnq"}'
+    http_version: 
+  recorded_at: Sun, 10 Nov 2013 03:57:25 GMT
+- request:
+    method: get
+    uri: 'https://api.launchkey.com/v1/poll?app_key=:app_key:&auth_request=fa8svf9fs4bgw3z6k9fuxy0ml3ujlsnq&secret_key=:secret_key:&signature=:signature:'
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - ':user_agent:'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sun, 10 Nov 2013 03:57:20 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '111'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - beaker.session.id=6191e264268a452287b0986864ee71a6; expires=Sun, 10-Nov-2013
+        04:57:20 GMT; httponly; Path=/; secure
+    body:
+      encoding: UTF-8
+      string: '{"successful": false, "status_code": 400, "message": "Pending response",
+        "message_code": 70403, "response": ""}'
+    http_version: 
+  recorded_at: Sun, 10 Nov 2013 03:57:26 GMT
+recorded_with: VCR 2.7.0
